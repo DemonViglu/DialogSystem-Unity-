@@ -114,6 +114,11 @@ public class DialogSystemManager : MonoBehaviour {
     /// Auto play the logic every frame
     /// </summary>
     private void AutoLoadMission() {
+        //when is typing words, press the key to pass
+        if (isOnCoroutine) {
+            if (Input.GetKeyDown(keyToPassTheSentence)) { cancelTyping = true; }
+            return;
+        }
         //if the mission is lock return;
         if (missionLock) {
             return;
