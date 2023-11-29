@@ -10,7 +10,7 @@ public class TestScript : MonoBehaviour
 
     public void AddMissionStr() {
         //DialogSystemManager.instance.AddMissionByStr(str);
-        DialogSystemManager.instance.AddMission(new Mission(str));
+        DialogSystemManager.instance.AddMission(new Mission(str,null));
     }
 
     public void AddMissionFile() {

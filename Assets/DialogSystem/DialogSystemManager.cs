@@ -209,23 +209,23 @@ public class DialogSystemManager : MonoBehaviour {
     public void StartMissionSO(int index) {
         ClearAllMission();
         hasOption = missionSOManager.missionList[index].optionMissionIndex.Count > 0;
-        missionOption.Clear();
-        for (int i = 0; i < missionSOManager.missionList[index].optionMissionIndex.Count; ++i) {
-            missionOption.Add(missionSOManager.missionList[index].optionMissionIndex[i]);
-            if (i == 0) {
-                Option_1.gameObject.GetComponentInChildren<Text>().text = missionSOManager.missionList[index].optionDescription[i];
-            }
-            if (i == 1) {
-                Option_2.gameObject.GetComponentInChildren<Text>().text = missionSOManager.missionList[index].optionDescription[i];
-            }
-        }
+        //for (int i = 0; i < missionSOManager.missionList[index].optionMissionIndex.Count; ++i) {
+        //    missionOption.Add(missionSOManager.missionList[index].optionMissionIndex[i]);
+        //    if (i == 0) {
+        //        Option_1.gameObject.GetComponentInChildren<Text>().text = missionSOManager.missionList[index].optionDescription[i];
+        //    }
+        //    if (i == 1) {
+        //        Option_2.gameObject.GetComponentInChildren<Text>().text = missionSOManager.missionList[index].optionDescription[i];
+        //    }
+        //}
+
         if (index >= missionSOManager.missionList.Count || index < 0) {
             Debug.LogError("Wrong index, it's out of the missionSO range!");
             return;
         }
-        Mission tmpMission = new Mission(missionSOManager.missionList[index].textString, missionSOManager.missionList[index].textAsset);
-        if (tmpMission.textString != "" || tmpMission.textAsset != null) {
-            instance.AddMission(tmpMission);
+        currentMission = new Mission(missionSOManager.missionList[index].textString, missionSOManager.missionList[index].textAsset, missionSOManager.missionList[index].optionMissionIndex, missionSOManager.missionList[index].optionDescription);
+        if (currentMission.textString != "" || currentMission.textAsset != null) {
+            instance.AddMission(currentMission);
             return;
         }
         else {
@@ -235,14 +235,17 @@ public class DialogSystemManager : MonoBehaviour {
     }
 
     [Header("DialogTree")]
-    private List<int> missionOption = new List<int>();
+    private Mission currentMission;
     [SerializeField] private Button Option_1;
     [SerializeField] private Button Option_2;
     private void SetUpButton() {
-        if (missionOption.Count == 1) {
+        if (currentMission.optionMissionIndex.Count == 1) {
+            Option_1.gameObject.GetComponentInChildren<Text>().text = currentMission.optionDescription[0];
             Option_1.gameObject.SetActive(true);
         }
-        else if (missionOption.Count == 2) {
+        else if (currentMission.optionMissionIndex.Count == 2) {
+            Option_1.gameObject.GetComponentInChildren<Text>().text = currentMission.optionDescription[0];
+            Option_2.gameObject.GetComponentInChildren<Text>().text = currentMission.optionDescription[1];
             Option_1.gameObject.SetActive(true);
             Option_2.gameObject.SetActive(true);
         }
@@ -255,12 +258,12 @@ public class DialogSystemManager : MonoBehaviour {
     public void PlayMissionOption_1() {
         CloseButton();
         ClearMissionRightNow();
-        StartMissionSO(missionOption[0]);
+        StartMissionSO(currentMission.optionMissionIndex[0]);
     }
     public void PlayMissionOption_2() {
         CloseButton();
         ClearMissionRightNow();
-        StartMissionSO(missionOption[1]);
+        StartMissionSO(currentMission.optionMissionIndex[1]);
     }
     public bool IsOnMission() {
         return onMission;
