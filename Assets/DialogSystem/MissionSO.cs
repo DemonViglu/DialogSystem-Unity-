@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 [CreateAssetMenu(fileName = "New MissionSO", menuName = "Mission/New MissionSO")]
 public class MissionSO:ScriptableObject
 {
@@ -11,4 +12,5 @@ public class MissionSO:ScriptableObject
     public List<int> optionMissionIndex;
 
     public List<string> optionDescription;
+
 }

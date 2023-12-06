@@ -15,3 +15,7 @@ MonoBehaviour:
   textString: I'm the mission3
   textAsset: {fileID: 0}
   optionMissionIndex: 
+  optionDescription: []
+  optionEvent_1:
+    m_PersistentCalls:
+      m_Calls: []

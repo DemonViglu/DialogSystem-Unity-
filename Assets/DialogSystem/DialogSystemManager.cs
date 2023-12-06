@@ -54,6 +54,9 @@ public class DialogSystemManager : MonoBehaviour {
     [Header("MissionSO")]
     [SerializeField] private MissionSOManager missionSOManager;
     private bool hasOption;
+
+    [Header("MissionEventHandler")]
+    [SerializeField] private MissionEventHandler missionEventHandler;
     #endregion
 
     #region Two Charge
@@ -224,6 +227,7 @@ public class DialogSystemManager : MonoBehaviour {
             return;
         }
         currentMission = new Mission(missionSOManager.missionList[index].textString, missionSOManager.missionList[index].textAsset, missionSOManager.missionList[index].optionMissionIndex, missionSOManager.missionList[index].optionDescription);
+        TryLoadMissionEvent(index);
         if (currentMission.textString != "" || currentMission.textAsset != null) {
             instance.AddMission(currentMission);
             return;
@@ -273,5 +277,13 @@ public class DialogSystemManager : MonoBehaviour {
     }
     public bool IsOnMissionGap() {
         return missionLock;
+    }
+
+    private void TryLoadMissionEvent(int index) {
+        for (int i = 0; i < missionEventHandler.missionEvents.Count; ++i) {
+            if (missionEventHandler.missionEvents[i].missionIndex == index) {
+                missionEventHandler.missionEvents[i].optionEvent?.Invoke();
+            }
+        }
     }
 }

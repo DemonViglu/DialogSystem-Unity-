@@ -1190,6 +1190,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1497926149}
   - component: {fileID: 1497926148}
+  - component: {fileID: 1497926150}
   m_Layer: 0
   m_Name: DialogSystem
   m_TagString: Untagged
@@ -1220,6 +1221,7 @@ MonoBehaviour:
   keyToPassTheSentence: 112
   missionList: []
   missionSOManager: {fileID: 11400000, guid: 3fcde1b24766288458bd57c1d4b0af2b, type: 2}
+  missionEventHandler: {fileID: 1497926150}
   Option_1: {fileID: 1966979801}
   Option_2: {fileID: 1234960459}
 --- !u!4 &1497926149
@@ -1237,6 +1239,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1497926150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1497926147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c7cc29f29d1ef9419adeab047d09e6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  missionEvents:
+  - {fileID: 1587347490}
 --- !u!1 &1587347487
 GameObject:
   m_ObjectHideFlags: 0
@@ -1247,6 +1263,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1587347489}
   - component: {fileID: 1587347488}
+  - component: {fileID: 1587347490}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1268,6 +1285,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   file: {fileID: 4900000, guid: 403ac37c67fd2b747ad2754f42044568, type: 3}
   str: "A\n\u4E0D\u6127\u662F\u4F60\u5462\uFF01\nA\n\u771F\u68D2\u266A"
+  eve:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &1587347489
 Transform:
   m_ObjectHideFlags: 0
@@ -1283,6 +1303,34 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1587347490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1587347487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05fc690a2dbfed444bcd9eb1e9cdbd5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  missionIndex: 2
+  optionEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1587347488}
+        m_TargetAssemblyTypeName: TestScript, Assembly-CSharp
+        m_MethodName: Test
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1644613395
 GameObject:
   m_ObjectHideFlags: 0
