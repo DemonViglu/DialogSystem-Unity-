@@ -170,6 +170,8 @@ public class DialogSystemManager : MonoBehaviour {
         textLabel.text = "";
         _SentenceTimeGap = 0;
         missionLock = true;
+
+        currentMission = null;
         Invoke("SetMissionAvalible", missionTimeGap);
     }
     private void SetMissionAvalible() {
@@ -243,6 +245,7 @@ public class DialogSystemManager : MonoBehaviour {
     [SerializeField] private Button Option_1;
     [SerializeField] private Button Option_2;
     private void SetUpButton() {
+        if (currentMission == null) { return; }
         if (currentMission.optionMissionIndex.Count == 1) {
             Option_1.gameObject.GetComponentInChildren<Text>().text = currentMission.optionDescription[0];
             Option_1.gameObject.SetActive(true);
