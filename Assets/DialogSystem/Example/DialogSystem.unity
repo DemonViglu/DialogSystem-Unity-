@@ -957,7 +957,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05fc690a2dbfed444bcd9eb1e9cdbd5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  missionIndex: 3
   optionEvent:
     m_PersistentCalls:
       m_Calls:

@@ -35,7 +35,7 @@ public class DialogSystemManager : MonoBehaviour {
 
     [Header("Player Setting")]
     ///                                     MISSION
-    ///_________________________________________________________________________________________________|                       |___________________________________________________
+    ///_________________________________________________________________________________________________|                       |___________________________________________________By DemonViglu
     ///        wordTimeGap        sentenceTimeGap                                    sentenceTimeGap             missiontTimeGap
     ///|- - - - - - - - - - -|                       |- - - - - - - - - - -|                            |                       |- - - - - - - - - - -|
     ///                                                                     (close the panel here)----->
@@ -254,7 +254,7 @@ public class DialogSystemManager : MonoBehaviour {
         missionList.Clear();
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////                          Dialog Tree                   ////////////////////////////////////////////////////////////////
+    /////////////////////   ByDemonViglu                       Dialog Tree                   ////////////////////////////////////////////////////////////////
     /// <summary>
     /// This function will clean the missionList, if you don't wan't this, use AddMissionSO or AddMissionSOAtFirst instead;
     /// </summary>
