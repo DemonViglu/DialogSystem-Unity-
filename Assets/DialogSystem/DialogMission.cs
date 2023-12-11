@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class Mission
+public class DialogMission
 {
     public string textString;
 
@@ -13,12 +13,12 @@ public class Mission
     public List<string> optionDescription;
 
     public int eventIndex;
-    public Mission(string textString="", TextAsset textAsset=null) {
+    public DialogMission(string textString="", TextAsset textAsset=null) {
         this.textString = textString;
         this.textAsset = textAsset;
         this.eventIndex = -1;
     }
-    public Mission(string textString = "", TextAsset textAsset = null,List<int> optionIndex = null, List<string> optionString = null, int eventIndex = -1) {
+    public DialogMission(string textString = "", TextAsset textAsset = null,List<int> optionIndex = null, List<string> optionString = null, int eventIndex = -1) {
         this.textString = textString;
         this.textAsset = textAsset;
         this.optionMissionIndex = optionIndex;

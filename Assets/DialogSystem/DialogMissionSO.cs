@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-[CreateAssetMenu(fileName = "New MissionSO", menuName = "Mission/New MissionSO")]
-public class MissionSO:ScriptableObject
+[CreateAssetMenu(fileName = "New DialogMissionSO", menuName = "DialogMission/New DialogMissionSO")]
+public class DialogMissionSO:ScriptableObject
 {
     [TextArea]
     public string textString;
