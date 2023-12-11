@@ -14,8 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textString: I'm the mission3
   textAsset: {fileID: 0}
-  optionMissionIndex: 
-  optionDescription: []
-  optionEvent_1:
-    m_PersistentCalls:
-      m_Calls: []
+  optionMissionIndex: 03000000
+  optionDescription:
+  - Trigger the event
+  eventIndex: -1

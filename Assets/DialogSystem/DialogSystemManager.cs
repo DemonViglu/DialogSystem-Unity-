@@ -40,16 +40,22 @@ public class DialogSystemManager : MonoBehaviour {
     ///|- - - - - - - - - - -|                       |- - - - - - - - - - -|                            |                       |- - - - - - - - - - -|
     ///                                                                     (close the panel here)----->
     ///
+    [Tooltip("The time between every char")]
     [SerializeField] private float wordTimeGap;
+    [Tooltip("The time between every sentence")]
     [SerializeField] private float sentenceTimeGap;
+    [Tooltip("The time between every mission")]
     [SerializeField] private float missionTimeGap;
+    [Tooltip("The time that set to judge whether the mission was just finished")]
+    [SerializeField] private float missionEdgeTime;
     [SerializeField] private KeyCode keyToPassTheSentence = KeyCode.P;
 
     [SerializeField]
     List<Mission> missionList = new List<Mission>();
-    List<string> textList = new List<string>();
+    private List<string> textList = new List<string>();
     private int sentenceIndex;
     private bool onMission = false;
+    [SerializeField] private bool justFinishMission = false;
 
     [Header("MissionSO")]
     [SerializeField] private MissionSOManager missionSOManager;
@@ -113,6 +119,7 @@ public class DialogSystemManager : MonoBehaviour {
     #region MissionLogic
     private float _SentenceTimeGap;
     private bool missionLock = false;
+
     /// <summary>
     /// Auto play the logic every frame
     /// </summary>
@@ -142,26 +149,52 @@ public class DialogSystemManager : MonoBehaviour {
         }
         else {
             if (missionList.Count > 0) {
-                if (missionList[0].textString != "") {
-                    var lineData = missionList[0].textString.Split('\n');
-                    foreach (var line in lineData) {
-                        textList.Add(line);
-                    }
-                }
-                else if (missionList[0].textAsset != null) {
-                    TextAsset file = missionList[0].textAsset;
-                    textList.Clear();
-                    sentenceIndex = 0;
-                    var lineData = file.text.Split('\n');
-                    foreach (var line in lineData) {
-                        textList.Add(line);
-                    }
-                }
+                LoadMissionAtFirst();
                 missionList.RemoveAt(0);
                 onMission = true;
             }
         }
     }
+
+    /// <summary>
+    /// Load the Mission at the missionList[0]
+    /// </summary>
+    private void LoadMissionAtFirst() {
+        currentMission = missionList[0];
+        if (currentMission.optionMissionIndex != null) {
+            hasOption = currentMission.optionMissionIndex.Count > 0;
+        }
+        else {
+            hasOption = false;
+        }
+        // If the mission record eventIndex, it will invoke the event from the eventList on eventHandler
+        bool hasEvent = TryLoadMissionEvent(currentMission.eventIndex);
+        if (currentMission.textString != "") {
+            var lineData = currentMission.textString.Split('\n');
+            foreach (var line in lineData) {
+                textList.Add(line);
+            }
+        }
+        else if (currentMission.textAsset != null) {
+            TextAsset file = currentMission.textAsset;
+            textList.Clear();
+            sentenceIndex = 0;
+            var lineData = file.text.Split('\n');
+            foreach (var line in lineData) {
+                textList.Add(line);
+            }
+        }
+        else if (hasEvent) {
+            return;
+        }
+        else {
+            Debug.LogError("There is nothing in the mission!");
+            return;
+        }
+    }
+
+    #region Setting Function to some parameter when the mission is over
+    //WARNING, the function below won't be load if the mission has optionMission
     private void OnMissionEnd() {
         Debug.Log("mission complete");
         panel.SetActive(false);
@@ -170,19 +203,29 @@ public class DialogSystemManager : MonoBehaviour {
         textLabel.text = "";
         _SentenceTimeGap = 0;
         missionLock = true;
+        justFinishMission = true;
 
         currentMission = null;
+        Invoke("ResetJustFinishMission", missionEdgeTime);
         Invoke("SetMissionAvalible", missionTimeGap);
+    }
+    private void ResetJustFinishMission() {
+        justFinishMission = false;
     }
     private void SetMissionAvalible() {
         onMission = false;
         missionLock = false;
     }
     #endregion 
-    // The PUBLIC API that expose to outside
+    /// <summary>
+    /// Add mission by C# class
+    /// </summary>
+    /// <param name="mission"></param>
     public void AddMission(Mission mission) {
         missionList.Add(mission);
     }
+
+    #endregion
     /// <summary>
     /// Refresh the mission state or jump to next mission;
     /// </summary>
@@ -197,10 +240,15 @@ public class DialogSystemManager : MonoBehaviour {
             textLabel.text = "";
             _SentenceTimeGap = 0;
         }
-        Debug.Log("ClearMissionSuccess");
+        //Debug.Log("ClearMissionSuccess");
         CancelInvoke("SetMissionAvalible");
+        //the 0.1 second is a must so as not to load the next mission
         Invoke("SetMissionAvalible", 0.1f);
     }
+
+    /// <summary>
+    /// Clean the missionList totally
+    /// </summary>
     public void ClearAllMission() {
         ClearMissionRightNow();
         missionList.Clear();
@@ -208,30 +256,24 @@ public class DialogSystemManager : MonoBehaviour {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////                          Dialog Tree                   ////////////////////////////////////////////////////////////////
     /// <summary>
-    /// 
+    /// This function will clean the missionList, if you don't wan't this, use AddMissionSO or AddMissionSOAtFirst instead;
     /// </summary>
     /// <param name="index"> call for the missionSO in the managerList </param>
     public void StartMissionSO(int index) {
         ClearAllMission();
         hasOption = missionSOManager.missionList[index].optionMissionIndex.Count > 0;
-        //for (int i = 0; i < missionSOManager.missionList[index].optionMissionIndex.Count; ++i) {
-        //    missionOption.Add(missionSOManager.missionList[index].optionMissionIndex[i]);
-        //    if (i == 0) {
-        //        Option_1.gameObject.GetComponentInChildren<Text>().text = missionSOManager.missionList[index].optionDescription[i];
-        //    }
-        //    if (i == 1) {
-        //        Option_2.gameObject.GetComponentInChildren<Text>().text = missionSOManager.missionList[index].optionDescription[i];
-        //    }
-        //}
-
         if (index >= missionSOManager.missionList.Count || index < 0) {
             Debug.LogError("Wrong index, it's out of the missionSO range!");
             return;
         }
-        currentMission = new Mission(missionSOManager.missionList[index].textString, missionSOManager.missionList[index].textAsset, missionSOManager.missionList[index].optionMissionIndex, missionSOManager.missionList[index].optionDescription);
-        TryLoadMissionEvent(index);
+        currentMission = new Mission(missionSOManager.missionList[index].textString, missionSOManager.missionList[index].textAsset, missionSOManager.missionList[index].optionMissionIndex, missionSOManager.missionList[index].optionDescription, missionSOManager.missionList[index].eventIndex);
+        bool hasEvent = TryLoadMissionEvent(currentMission.eventIndex);
+
         if (currentMission.textString != "" || currentMission.textAsset != null) {
             instance.AddMission(currentMission);
+            return;
+        }
+        else if (hasEvent) {
             return;
         }
         else {
@@ -240,12 +282,40 @@ public class DialogSystemManager : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Add Mission from SOManager to the missionList at last;
+    /// </summary>
+    /// <param name="index"></param>
+    public void AddMissionSO(int index) {
+        if (index >= missionSOManager.missionList.Count || index < 0) {
+            Debug.LogError("Wrong index, it's out of the missionSO range!");
+            return;
+        }
+        missionList.Add(new Mission(missionSOManager.missionList[index].textString, missionSOManager.missionList[index].textAsset, missionSOManager.missionList[index].optionMissionIndex, missionSOManager.missionList[index].optionDescription, missionSOManager.missionList[index].eventIndex));
+    }
+
+    /// <summary>
+    /// Add Mission from SOManager to the missionList at first, it will be load at soon
+    /// </summary>
+    /// <param name="index"></param>
+    public void AddMissionSOAtFirst(int index) {
+        if (index >= missionSOManager.missionList.Count || index < 0) {
+            Debug.LogError("Wrong index, it's out of the missionSO range!");
+            return;
+        }
+        missionList.Insert(0, new Mission(missionSOManager.missionList[index].textString, missionSOManager.missionList[index].textAsset, missionSOManager.missionList[index].optionMissionIndex, missionSOManager.missionList[index].optionDescription, missionSOManager.missionList[index].eventIndex));
+    }
+
     [Header("DialogTree")]
     private Mission currentMission;
     [SerializeField] private Button Option_1;
     [SerializeField] private Button Option_2;
+
+    /// <summary>
+    /// Open the buttons and refresh the text with optionDescription
+    /// </summary>
     private void SetUpButton() {
-        if (currentMission == null) { return; }
+        if (!hasOption) { return; }
         if (currentMission.optionMissionIndex.Count == 1) {
             Option_1.gameObject.GetComponentInChildren<Text>().text = currentMission.optionDescription[0];
             Option_1.gameObject.SetActive(true);
@@ -258,35 +328,80 @@ public class DialogSystemManager : MonoBehaviour {
         }
         return;
     }
+
+    /// <summary>
+    /// Just clost the both buttons;
+    /// </summary>
     private void CloseButton() {
         Option_1.gameObject.SetActive(false);
         Option_2.gameObject.SetActive(false);
     }
+
+    /// <summary>
+    /// Try load the missionEvent under the eventHandler with index
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns> Return whether load the event successfully </returns>
+    private bool TryLoadMissionEvent(int index) {
+        if (index < 0 || index > missionEventHandler.missionEvents.Count) {
+            return false;
+        }
+        else {
+            missionEventHandler.missionEvents[index].optionEvent?.Invoke();
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// Should be play by the button1
+    /// </summary>
     public void PlayMissionOption_1() {
         CloseButton();
         ClearMissionRightNow();
-        StartMissionSO(currentMission.optionMissionIndex[0]);
+        //StartMissionSO(currentMission.optionMissionIndex[0]);
+        AddMissionSOAtFirst(currentMission.optionMissionIndex[0]);
     }
+
+    /// <summary>
+    /// Should be play by the button2
+    /// </summary>
     public void PlayMissionOption_2() {
         CloseButton();
         ClearMissionRightNow();
-        StartMissionSO(currentMission.optionMissionIndex[1]);
+        //StartMissionSO(currentMission.optionMissionIndex[1]);
+        AddMissionSOAtFirst(currentMission.optionMissionIndex[1]);
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns> The mission state </returns>
     public bool IsOnMission() {
         return onMission;
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns> whether is typing the word </returns>
     public bool IsOutPutWord() {
         return isOnCoroutine;
     }
+
+    /// <summary>
+    /// Only will be true when just on mission end and it will insist for "Mission Time Gap".but the parameter will influence the mission playing logic and it will 
+    /// be true for a long time , use "JustFinishPlay" instead;
+    /// </summary>
+    /// <returns></returns>
     public bool IsOnMissionGap() {
         return missionLock;
     }
 
-    private void TryLoadMissionEvent(int index) {
-        for (int i = 0; i < missionEventHandler.missionEvents.Count; ++i) {
-            if (missionEventHandler.missionEvents[i].missionIndex == index) {
-                missionEventHandler.missionEvents[i].optionEvent?.Invoke();
-            }
-        }
+    /// <summary>
+    /// Only will be true when just on mission end and it will insist for "Mission Edge Time"
+    /// </summary>
+    /// <returns></returns>
+    public bool JustFinishPlay() {
+        return justFinishMission;
     }
 }
