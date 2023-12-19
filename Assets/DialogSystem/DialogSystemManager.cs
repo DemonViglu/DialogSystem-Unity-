@@ -62,7 +62,7 @@ public class DialogSystemManager : MonoBehaviour {
     private bool hasOption;
 
     [Header("MissionEventHandler")]
-    [SerializeField] private DialogMissionEventHandler missionEventHandler;
+    [SerializeField] public DialogMissionEventHandler missionEventHandler;
     #endregion
 
     #region Two Charge
@@ -72,6 +72,7 @@ public class DialogSystemManager : MonoBehaviour {
     private void TextCharge() {
         if (sentenceIndex == textList.Count) {
             SetUpButton();
+            missionEventHandler.OnMissionEnd(currentMission.dialogMissionID);
             if (hasOption) return;
 
             OnMissionEnd();
@@ -205,9 +206,14 @@ public class DialogSystemManager : MonoBehaviour {
         missionLock = true;
         justFinishMission = true;
 
+        OnEveryMissionEnd();
         currentMission = null;
         Invoke("ResetJustFinishMission", missionEdgeTime);
         Invoke("SetMissionAvalible", missionTimeGap);
+    }
+
+    private void OnEveryMissionEnd() {
+        missionEventHandler.OnMissionEnd(currentMission.dialogMissionID);
     }
     private void ResetJustFinishMission() {
         justFinishMission = false;
@@ -266,7 +272,7 @@ public class DialogSystemManager : MonoBehaviour {
             Debug.LogError("Wrong index, it's out of the missionSO range!");
             return;
         }
-        currentMission = new DialogMission(missionSOManager.missionList[index].textString, missionSOManager.missionList[index].textAsset, missionSOManager.missionList[index].optionMissionIndex, missionSOManager.missionList[index].optionDescription, missionSOManager.missionList[index].eventIndex);
+        currentMission = new DialogMission(missionSOManager.missionList[index].textString, missionSOManager.missionList[index].textAsset, missionSOManager.missionList[index].optionMissionIndex, missionSOManager.missionList[index].optionDescription, missionSOManager.missionList[index].eventIndex,index);
         bool hasEvent = TryLoadMissionEvent(currentMission.eventIndex);
 
         if (currentMission.textString != "" || currentMission.textAsset != null) {
@@ -291,7 +297,7 @@ public class DialogSystemManager : MonoBehaviour {
             Debug.LogError("Wrong index, it's out of the missionSO range!");
             return;
         }
-        missionList.Add(new DialogMission(missionSOManager.missionList[index].textString, missionSOManager.missionList[index].textAsset, missionSOManager.missionList[index].optionMissionIndex, missionSOManager.missionList[index].optionDescription, missionSOManager.missionList[index].eventIndex));
+        missionList.Add(new DialogMission(missionSOManager.missionList[index].textString, missionSOManager.missionList[index].textAsset, missionSOManager.missionList[index].optionMissionIndex, missionSOManager.missionList[index].optionDescription, missionSOManager.missionList[index].eventIndex,index));
     }
 
     /// <summary>
@@ -303,11 +309,11 @@ public class DialogSystemManager : MonoBehaviour {
             Debug.LogError("Wrong index, it's out of the missionSO range!");
             return;
         }
-        missionList.Insert(0, new DialogMission(missionSOManager.missionList[index].textString, missionSOManager.missionList[index].textAsset, missionSOManager.missionList[index].optionMissionIndex, missionSOManager.missionList[index].optionDescription, missionSOManager.missionList[index].eventIndex));
+        missionList.Insert(0, new DialogMission(missionSOManager.missionList[index].textString, missionSOManager.missionList[index].textAsset, missionSOManager.missionList[index].optionMissionIndex, missionSOManager.missionList[index].optionDescription, missionSOManager.missionList[index].eventIndex,index));
     }
 
     [Header("DialogTree")]
-    private DialogMission currentMission;
+    [SerializeField]private DialogMission currentMission;
     [SerializeField] private Button Option_1;
     [SerializeField] private Button Option_2;
 

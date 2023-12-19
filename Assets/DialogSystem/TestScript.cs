@@ -12,7 +12,7 @@ public class TestScript : MonoBehaviour
 
     public void AddMissionStr() {
         //DialogSystemManager.instance.AddMissionByStr(str);
-        DialogSystemManager.instance.AddMission(new DialogMission(str,null));
+        DialogSystemManager.instance.AddMission(new DialogMission(str,null,null,null,-1,0));
     }
 
     public void AddMissionFile() {
@@ -22,5 +22,16 @@ public class TestScript : MonoBehaviour
 
     public void Test() {
         Debug.Log("...");
+    }
+    [ContextMenu("Test")]
+    public void What() {
+        DialogSystemManager.instance.missionEventHandler._OnEveryMissionEnd += DoOnMission_1End;
+    }
+
+    public void DoOnMission_1End(int a) {
+        if(a!= 0) {
+            return;
+        }
+        Debug.Log("On mission_1");
     }
 }
