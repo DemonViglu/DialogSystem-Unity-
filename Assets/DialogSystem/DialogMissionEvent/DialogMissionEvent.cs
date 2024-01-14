@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-public class DialogMissionEvent : MonoBehaviour
-{
-    public UnityEvent optionEvent;
+
+
+namespace DemonViglu.DialogSystemManager {
+    public class DialogMissionEvent : MonoBehaviour {
+        public UnityEvent optionEvent;
+    }
 }
