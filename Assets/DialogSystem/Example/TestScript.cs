@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using DemonViglu.DialogSystemManager;
+using CustomInspector;
+
 public class TestScript : MonoBehaviour
 {
     [SerializeField]private TextAsset file;
@@ -35,4 +37,11 @@ public class TestScript : MonoBehaviour
         }
         Debug.Log("On mission_1");
     }
+
+    [Button(nameof(OneToTwo))]
+    public int a;
+    void OneToTwo() {
+        DialogMM.instance.AddRequest(new MultiDialogRequest(0,1,0));
+    }
+
 }

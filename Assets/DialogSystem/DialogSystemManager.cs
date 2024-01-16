@@ -1,16 +1,13 @@
+using CustomInspector;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Security.Cryptography;
-using Unity.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 namespace DemonViglu.DialogSystemManager {
-
     public class DialogSystemManager : MonoBehaviour {
         public static DialogSystemManager instance;
-
+        
         #region Singleton
         /// <summary>
         /// Singleton the DialogSystemManager
@@ -25,18 +22,38 @@ namespace DemonViglu.DialogSystemManager {
             }
         }
         #endregion
-
+        
+        
         #region parameter
-        [Header("UI_Component")]
+        [HorizontalLine("UI_Component")]
+        [ForceFill(errorMessage ="")]
         [SerializeField] private GameObject panel;
         [SerializeField] private Text textLabel;
 
-        [Header("Image")]
+#pragma warning disable 0414
+        [SerializeField] private bool hasImage=false;
+
+        [ShowIf(nameof(hasImage))]
         [SerializeField] private Sprite npc1;
+        [ShowIf(nameof(hasImage))]
         [SerializeField] private Sprite npc2;
+        [ShowIf(nameof(hasImage))]
         [SerializeField] private Image faceImage;
 
-        [Header("Player Setting")]
+
+        [SerializeField] private GameObject ButtonPanel;
+        [SerializeField] private GameObject buttonPrefab;
+
+        [HorizontalLine("MissionSO_Source")]
+        [ForceFill]
+        [SerializeField] private DialogMissionSOManager missionSOManager;
+        private bool hasOption;
+
+        [Header("MissionEventHandler")]
+        [ForceFill]
+        [SerializeField] public DialogMissionEventHandler missionEventHandler;
+
+        [HorizontalLine("Player Setting")]
         ///                                     MISSION
         ///_________________________________________________________________________________________________|                       |___________________________________________________By DemonViglu
         ///        wordTimeGap        sentenceTimeGap                                    sentenceTimeGap             missiontTimeGap
@@ -53,38 +70,57 @@ namespace DemonViglu.DialogSystemManager {
         [SerializeField] private float missionTimeGap=3f;
         [Tooltip("The time that set to judge whether the mission was just finished")]
         [SerializeField] private float missionEdgeTime=0.1f;
+        [FixedValues(KeyCode.P,KeyCode.B)]
         [SerializeField] private KeyCode keyToPassTheSentence = KeyCode.P;
         [Tooltip("Maybe you have multiple system, so use this to cor with dmm(DialogSystemManagerManager)")]
         [SerializeField] private int dialogsystemID = -1;
 
-        [SerializeField]
-        List<DialogMission> missionList = new List<DialogMission>();
+
+
+        [HorizontalLine("DialogTreeDebug")]
+        [SerializeField] private DialogMission currentMission;
+        [SerializeField] private List<GameObject> options;
+        [SerializeField] List<DialogMission> missionList = new List<DialogMission>();
+
+        [Header("MultiDialogPlayer")]
+        [SerializeField] private int chatDialogSystemID = -1;
+
+
         private List<string> textList = new List<string>();
         private int sentenceIndex;
         private bool onMission = false;
         [SerializeField] private bool justFinishMission = false;
 
-        [Header("MissionSO")]
-        [SerializeField] private DialogMissionSOManager missionSOManager;
-        private bool hasOption;
 
-        [Header("MissionEventHandler")]
-        [SerializeField] public DialogMissionEventHandler missionEventHandler;
+
+
+
         #endregion
 
         #region Two Charge
         //当前是否在输入字符，选择快速码
         private bool isOnCoroutine = false;
         private bool cancelTyping = false;
+
+
         private void TextCharge() {
-            if (sentenceIndex == textList.Count) {
-                SetUpButton();
+            if (sentenceIndex >= textList.Count) {
+                if (sentenceIndex > textList.Count) {
+                    return;
+                }
+
                 missionEventHandler.OnMissionEnd(currentMission.dialogMissionID);
-                if (hasOption) return;
+                sentenceIndex += 1;
+                if (hasOption) {
+                    SetUpButton();
+                    return;
+                }
+                missionEventHandler.OnMissionTreeEnd(currentMission.dialogMissionID);
 
                 OnMissionEnd();
                 return;
             }
+
             if (isOnCoroutine) {
                 if (Input.GetKeyDown(keyToPassTheSentence)) { cancelTyping = true; }
                 return;
@@ -97,17 +133,17 @@ namespace DemonViglu.DialogSystemManager {
         IEnumerator SetTextUI() {
             isOnCoroutine = true;
             textLabel.text = "";
-            switch (textList[sentenceIndex]) {
-                case "A":
-                    if (npc1 != null) faceImage.sprite = npc1;
-                    ++sentenceIndex;
-                    break;
-                case "B":
-                    if (npc2 != null) faceImage.sprite = npc2;
-                    ++sentenceIndex;
-                    break;
-            }
             if(sentenceIndex<textList.Count) {
+                switch (textList[sentenceIndex]) {
+                    case "A":
+                        if (npc1 != null) faceImage.sprite = npc1;
+                        ++sentenceIndex;
+                        break;
+                    case "B":
+                        if (npc2 != null) faceImage.sprite = npc2;
+                        ++sentenceIndex;
+                        break;
+                }
                 for (int i = 0; i < textList[sentenceIndex].Length; i++) {
                     // IF YOU WANT TO PASS THE SENTENCE, PRESS THE KEY THAT
                     // SET IN TEXTCHARGE
@@ -128,7 +164,12 @@ namespace DemonViglu.DialogSystemManager {
 
         #region MissionLogic
         private float _SentenceTimeGap;
+        /// <summary>
+        /// It's just used around OnMissionEnd, so as to pass the missionTimeGap
+        /// </summary>
         private bool missionLock = false;
+        [SerializeField] private bool multiMissionlock = false;
+        [SerializeField] public bool isMultiMissionChat = false;
 
         /// <summary>
         /// Auto play the logic every frame
@@ -140,7 +181,7 @@ namespace DemonViglu.DialogSystemManager {
                 return;
             }
             //if the mission is lock return;
-            if (missionLock) {
+            if (missionLock||multiMissionlock) {
                 return;
             }
             if (onMission) {
@@ -221,9 +262,6 @@ namespace DemonViglu.DialogSystemManager {
             Invoke("SetMissionAvalible", missionTimeGap);
         }
 
-        //private void OnEveryMissionEnd() {
-        //    missionEventHandler.OnMissionEnd(currentMission.dialogMissionID);
-        //}
         private void ResetJustFinishMission() {
             justFinishMission = false;
         }
@@ -323,12 +361,6 @@ namespace DemonViglu.DialogSystemManager {
             missionList.Insert(0, new DialogMission(missionSOManager.missionList[index].textString, missionSOManager.missionList[index].textAsset, missionSOManager.missionList[index].optionMissionIndex, missionSOManager.missionList[index].optionDescription, missionSOManager.missionList[index].eventIndex, index));
         }
 
-        [Header("DialogTree")]
-        [SerializeField] private DialogMission currentMission;
-
-        [SerializeField] private List<GameObject> options;
-        [SerializeField] private GameObject ButtonPanel;
-        [SerializeField] private GameObject buttonPrefab;
 
         /// <summary>
         /// Open the buttons and refresh the text with optionDescription
@@ -352,7 +384,7 @@ namespace DemonViglu.DialogSystemManager {
         }
 
         /// <summary>
-        /// Just clost all the buttons;
+        /// Just clost the both buttons;
         /// </summary>
         private void CloseButton() {
             ButtonPanel.SetActive(false);
@@ -376,6 +408,9 @@ namespace DemonViglu.DialogSystemManager {
                 return true;
             }
         }
+
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -411,6 +446,32 @@ namespace DemonViglu.DialogSystemManager {
 
         public int GetSystemID() {
             return dialogsystemID;
+        }
+
+        /// <summary>
+        /// Use for DialogMM to prepare for two dialogsystem Chat to each other
+        /// </summary>
+        /// <returns></returns>
+        public bool MultiDialogLock() {
+            if ( multiMissionlock||isMultiMissionChat) {
+                return false;
+            }
+            else {
+                multiMissionlock = true;
+                return true;
+            }
+        }
+
+        public void MultiDialogUnlock() {
+            multiMissionlock = false;
+        }
+
+        public void SetChatDialogID(int id) {
+            chatDialogSystemID = id;
+        }
+
+        public int GetChatDialogID() {
+            return chatDialogSystemID;
         }
     }
 }
