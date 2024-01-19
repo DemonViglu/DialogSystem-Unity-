@@ -44,6 +44,12 @@ namespace DemonViglu.DialogSystemManager {
         [SerializeField] private GameObject ButtonPanel;
         [SerializeField] private GameObject buttonPrefab;
 
+        [SerializeField] private Button AutoPlayButton;
+
+        [HorizontalLine("DialogSentenceDebug")]
+        [SerializeField] private bool autoPlaySentence = true;
+        [SerializeField] private bool hasClickDownPlayButton = false;
+
         [HorizontalLine("MissionSO_Source")]
         [ForceFill]
         [SerializeField] private DialogMissionSOManager missionSOManager;
@@ -72,6 +78,9 @@ namespace DemonViglu.DialogSystemManager {
         [SerializeField] private float missionEdgeTime=0.1f;
         [FixedValues(KeyCode.P,KeyCode.B)]
         [SerializeField] private KeyCode keyToPassTheSentence = KeyCode.P;
+        [FixedValues(KeyCode.Space, KeyCode.P)]
+        [SerializeField] private KeyCode keyToPassToNextSentence = KeyCode.Space;
+
         [Tooltip("Maybe you have multiple system, so use this to cor with dmm(DialogSystemManagerManager)")]
         [SerializeField] private int dialogsystemID = -1;
 
@@ -103,6 +112,21 @@ namespace DemonViglu.DialogSystemManager {
         private bool cancelTyping = false;
 
 
+
+
+        private void Start() {
+            AutoPlayButton.onClick.AddListener(() => { 
+                autoPlaySentence=!autoPlaySentence;
+                if (autoPlaySentence) {
+                    AutoPlayButton.transform.gameObject.GetComponentInChildren<Text>().text = "Auto";
+                }
+                else {
+                    AutoPlayButton.transform.gameObject.GetComponentInChildren<Text>().text = "Not_Auto";
+                }
+                hasClickDownPlayButton = false;
+            });
+            autoPlaySentence = true;
+        }
         private void TextCharge() {
             if (sentenceIndex >= textList.Count) {
                 if (sentenceIndex > textList.Count) {
@@ -189,9 +213,23 @@ namespace DemonViglu.DialogSystemManager {
                     return;
                 }
                 if (_SentenceTimeGap > 0) {
-                    _SentenceTimeGap -= Time.deltaTime;
+                    //防止该TimeGap过于少
+                    if(_SentenceTimeGap>-10f)_SentenceTimeGap -= Time.deltaTime;
                 }
                 else {
+                    //_SentenceTimeGap<0且not isOnCoroutine 且等等情况满足，随时可以调用该句子进入下一阶段,但是有auto这个变量卡住
+
+                    if (Input.GetKeyDown(keyToPassToNextSentence)) {
+                        hasClickDownPlayButton = true;
+                    }
+                    if (!autoPlaySentence) {
+                        if (!hasClickDownPlayButton&&sentenceIndex!=textList.Count) {
+                            return;
+                        }
+                        else {
+                            hasClickDownPlayButton = false;
+                        }
+                    }
                     _SentenceTimeGap = sentenceTimeGap;
                     UICharge();
                     TextCharge();
@@ -211,6 +249,10 @@ namespace DemonViglu.DialogSystemManager {
         /// Load the Mission at the missionList[0]
         /// </summary>
         private void LoadMissionAtFirst() {
+
+            //每个对话的第一句话前不需要卡顿
+            hasClickDownPlayButton = true;
+
             currentMission = missionList[0];
             if (currentMission.optionMissionIndex != null) {
                 hasOption = currentMission.optionMissionIndex.Count > 0;
