@@ -376,6 +376,10 @@ PrefabInstance:
       propertyPath: AutoPlayButton
       value: 
       objectReference: {fileID: 882571767}
+    - target: {fileID: 1265962609095300218, guid: a61b4662e9fe3624ebf3eb6caacc8330, type: 3}
+      propertyPath: missionEdgeTime
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 1265962609216262507, guid: a61b4662e9fe3624ebf3eb6caacc8330, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 

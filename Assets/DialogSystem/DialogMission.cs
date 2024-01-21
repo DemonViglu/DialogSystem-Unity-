@@ -23,6 +23,8 @@ namespace DemonViglu.DialogSystemManager {
             this.eventIndex = -1;
             this.dialogMissionID = -1;
         }
+
+        //In My system, dialogMissionID is the index in SOManager as default;
         public DialogMission(string textString = "", TextAsset textAsset = null, List<int> optionIndex = null, List<string> optionString = null, int eventIndex = -1, int dialogMissionID = -1) {
             this.textString = textString;
             this.textAsset = textAsset;

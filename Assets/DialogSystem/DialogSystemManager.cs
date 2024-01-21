@@ -115,8 +115,15 @@ namespace DemonViglu.DialogSystemManager {
 
 
         private void Start() {
-            AutoPlayButton.onClick.AddListener(() => { 
-                autoPlaySentence=!autoPlaySentence;
+            InitialAutoPlayMode();  
+        }
+
+        /// <summary>
+        /// Initial the auto playButton and some parameter
+        /// </summary>
+        private void InitialAutoPlayMode() {
+            AutoPlayButton.onClick.AddListener(() => {
+                autoPlaySentence = !autoPlaySentence;
                 if (autoPlaySentence) {
                     AutoPlayButton.transform.gameObject.GetComponentInChildren<Text>().text = "Auto";
                 }
