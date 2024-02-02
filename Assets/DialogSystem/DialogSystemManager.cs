@@ -16,7 +16,7 @@ namespace DemonViglu.DialogSystemManager {
             if (doSingleton) { 
                 if (instance != null) {
                     Destroy(instance);
-                    Debug.LogError("Find another DialogSystem!");
+                    Debug.LogError("DIALOGSYSTEM: Find another DialogSystem!");
                 }
                 instance = this;
             }
@@ -33,12 +33,16 @@ namespace DemonViglu.DialogSystemManager {
 #pragma warning disable 0414
         [SerializeField] private bool hasImage=false;
 
-        [ShowIf(nameof(hasImage))]
-        [SerializeField] private Sprite npc1;
-        [ShowIf(nameof(hasImage))]
-        [SerializeField] private Sprite npc2;
+        //[ShowIf(nameof(hasImage))]
+        //[SerializeField] private Sprite npc1;
+        //[ShowIf(nameof(hasImage))]
+        //[SerializeField] private Sprite npc2;
         [ShowIf(nameof(hasImage))]
         [SerializeField] private Image faceImage;
+        [ShowIf(nameof(hasImage))]
+        [SerializeField] private DialogIconManager iconManager;
+        [ShowIf(nameof(hasImage))]
+        [SerializeField] private Text iconRealName;
 
 
         [SerializeField] private GameObject ButtonPanel;
@@ -165,16 +169,20 @@ namespace DemonViglu.DialogSystemManager {
             isOnCoroutine = true;
             textLabel.text = "";
             if(sentenceIndex<textList.Count) {
-                switch (textList[sentenceIndex]) {
-                    case "A":
-                        if (npc1 != null) faceImage.sprite = npc1;
-                        ++sentenceIndex;
-                        break;
-                    case "B":
-                        if (npc2 != null) faceImage.sprite = npc2;
-                        ++sentenceIndex;
-                        break;
+                //switch (textList[sentenceIndex]) {
+                //    case "A":
+                //        if (npc1 != null) faceImage.sprite = npc1;
+                //        ++sentenceIndex;
+                //        break;
+                //    case "B":
+                //        if (npc2 != null) faceImage.sprite = npc2;
+                //        ++sentenceIndex;
+                //        break;
+                //}
+                if (SetIconUI(textList[sentenceIndex])) {
+                    ++sentenceIndex;
                 }
+
                 for (int i = 0; i < textList[sentenceIndex].Length; i++) {
                     // IF YOU WANT TO PASS THE SENTENCE, PRESS THE KEY THAT
                     // SET IN TEXTCHARGE
@@ -187,6 +195,23 @@ namespace DemonViglu.DialogSystemManager {
             }
             isOnCoroutine = false;
             cancelTyping = false;
+        }
+
+        private bool SetIconUI(string name) {
+            if(name=="NULL"){
+                iconRealName.text = "";
+                faceImage.sprite = null;
+                return true;
+            }
+            if (iconManager.iconName.Contains(name)) {
+                int iconIndex=iconManager.iconName.IndexOf(name);
+                faceImage.sprite = iconManager.icons[iconIndex];
+                string realName=name.Split(':')[0];
+                iconRealName.text = realName;
+                return true;
+            }
+            return false;
+
         }
         #endregion
         private void Update() {
@@ -288,7 +313,7 @@ namespace DemonViglu.DialogSystemManager {
                 return;
             }
             else {
-                Debug.LogWarning("There is nothing in the mission!");
+                Debug.LogWarning("DIALOGSYSTEM: There is nothing in the mission!");
                 return;
             }
         }
@@ -336,7 +361,7 @@ namespace DemonViglu.DialogSystemManager {
             StopCoroutine("SetTextUI");
             isOnCoroutine = false;
             {
-                panel.SetActive(false);
+                if(!hasOption)panel.SetActive(false);
                 sentenceIndex = 0;
                 textList.Clear();
                 textLabel.text = "";
@@ -367,7 +392,7 @@ namespace DemonViglu.DialogSystemManager {
             ClearAllMission();
             hasOption = missionSOManager.missionList[index].optionMissionIndex.Count > 0;
             if (index >= missionSOManager.missionList.Count || index < 0) {
-                Debug.LogError("Wrong index, it's out of the missionSO range!");
+                Debug.LogError("DIALOGSYSTEM: Wrong index, it's out of the missionSO range!");
                 return;
             }
             currentMission = new DialogMission(missionSOManager.missionList[index].textString, missionSOManager.missionList[index].textAsset, missionSOManager.missionList[index].optionMissionIndex, missionSOManager.missionList[index].optionDescription, missionSOManager.missionList[index].eventIndex, index);
@@ -381,7 +406,7 @@ namespace DemonViglu.DialogSystemManager {
                 return;
             }
             else {
-                Debug.LogWarning("There is nothing in the missionSO!");
+                Debug.LogWarning("DIALOGSYSTEM: There is nothing in the missionSO!");
                 return;
             }
         }
@@ -392,7 +417,7 @@ namespace DemonViglu.DialogSystemManager {
         /// <param name="index"></param>
         public void AddMissionSO(int index) {
             if (index >= missionSOManager.missionList.Count || index < 0) {
-                Debug.LogError("Wrong index, it's out of the missionSO range!");
+                Debug.LogError("DIALOGSYSTEM: Wrong index, it's out of the missionSO range!");
                 return;
             }
             missionList.Add(new DialogMission(missionSOManager.missionList[index].textString, missionSOManager.missionList[index].textAsset, missionSOManager.missionList[index].optionMissionIndex, missionSOManager.missionList[index].optionDescription, missionSOManager.missionList[index].eventIndex, index));
@@ -404,7 +429,7 @@ namespace DemonViglu.DialogSystemManager {
         /// <param name="index"></param>
         public void AddMissionSOAtFirst(int index) {
             if (index >= missionSOManager.missionList.Count || index < 0) {
-                Debug.LogError("Wrong index, it's out of the missionSO range!");
+                Debug.LogError("DIALOGSYSTEM: Wrong index, it's out of the missionSO range!");
                 return;
             }
             missionList.Insert(0, new DialogMission(missionSOManager.missionList[index].textString, missionSOManager.missionList[index].textAsset, missionSOManager.missionList[index].optionMissionIndex, missionSOManager.missionList[index].optionDescription, missionSOManager.missionList[index].eventIndex, index));
@@ -423,6 +448,9 @@ namespace DemonViglu.DialogSystemManager {
                 tmpButton.gameObject.SetActive(true);
                 tmpButton.GetComponent<DialogButton>().index = i;
                 tmpButton. GetComponent<Button>().onClick.AddListener(() => {
+                    missionEventHandler.OnOptionClick(currentMission.dialogMissionID,tmpButton.GetComponent<DialogButton>().index);
+
+                    Debug.Log("DIALOGSYSTEM: The event with mission " + currentMission.dialogMissionID + " is called by option NO." + tmpButton.GetComponent<DialogButton>().index + " ,and the description is " + currentMission.optionDescription[tmpButton.GetComponent<DialogButton>().index]);
                     CloseButton();
                     ClearMissionRightNow();
                     AddMissionSOAtFirst(currentMission.optionMissionIndex[tmpButton.GetComponent<DialogButton>().index]) ;
@@ -454,6 +482,7 @@ namespace DemonViglu.DialogSystemManager {
             }
             else {
                 missionEventHandler.missionEvents[index].optionEvent?.Invoke();
+                Debug.Log("DIALOGSYSTEM: Watch out the eventIndex under the SO, the missionList index of:" + index + " is call by the SO that has eventIndex of:" + index);
                 return true;
             }
         }

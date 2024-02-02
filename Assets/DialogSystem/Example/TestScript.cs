@@ -28,16 +28,14 @@ public class TestScript : MonoBehaviour
     }
     [ContextMenu("Test")]
     public void What() {
-        DialogSystemManager.instance.missionEventHandler._OnEveryMissionEnd += DoOnMission_1End;
+        DialogSystemManager.instance.missionEventHandler._OnEveryMissionEnd += DoOnMission;
     }
 
-    public void DoOnMission_1End(int a) {
-        if(a!= 0) {
-            return;
-        }
-        Debug.Log("On mission_1");
+    public void DoOnMission(int a) {
+        Debug.Log("Now is playing the SO which index is :" + a + " in the SOManager. If there is no dialogsentense, means the options finish the dialog!");
     }
 
+    [Tooltip("Only use for multiDialogSystem")]
     [Button(nameof(OneToTwo))]
     public int a;
     void OneToTwo() {

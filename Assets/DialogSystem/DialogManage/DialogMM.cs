@@ -3,10 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Unity.Netcode;
 namespace DemonViglu.DialogSystemManager {
 
-    public class DialogMM :NetworkBehaviour{
+    public class DialogMM :MonoBehaviour{
 
         public static DialogMM instance;
 
