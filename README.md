@@ -3,22 +3,9 @@
 
 ## 初始使用介绍
 ### 初始设置步骤：
-1. 将package文件夹中的DialogSystem2添加到项目之中。
-![](https://img-blog.csdnimg.cn/direct/3713d1c9fc2c4b12a0b42f9e930e1023.png#pic_center)
-2. 在Hierarchy窗口面板中创建一个空物体(建议命名成DialogSystem)，添加代码**DialogSystemManager**和**DialogMissionEventHandler**，并将**DialogMissionEventHandler**拖拽到**DialogSystemManager**的相应位置。
-3. 在Hierarchy窗口面板中创建一个Canvas,一个带有子物体Text的Panel，两个button(为了区分，下文分别叫做button_1和button_2)，并将两个button和panel设为**不可见**。（如图两个button分别叫Option_1和Option_2）。
-4. 将刚刚创建的text，panel,两个button拖拽到**DialogSystemManager**上面，并且button_1的onClick处调用**DialogSystemManager**的
-```C#
-PlayMissionOption_1();
-```
-  button_2的onClick处调用**DialogSystemManager**的
-```C#
-PlayMissionOption_2();
-```
-<br/>![](https://img-blog.csdnimg.cn/direct/4ec1e963ea2944a3b5aa9c0cfe03a947.png?#pic_center)
-
-5. 在Asset文件夹下创建一个DialogMissionSO文件夹，并右键点击"Create"->"DialogMission"->"New DialogMissionSOManager",并将该SO文件拖拽到DialogSystemManager的相应位置。
-![](https://img-blog.csdnimg.cn/direct/78f763c1e3e84415851c0fcc8c7c04f3.png#pic_center)
+![项目总览](https://github.com/DemonViglu/SchoolWork/blob/main/Image/1.png)<br/>
+1. 找到DialogSystem\Example\DialogSystem，该场景为示例场景。也可以将DialogSystem\Example\Prefab中的 _DMM_ 拖拽到你的一个空物体上，进行调试。
+2. 点击 _Add_ 按钮，即可看到一段对话播放。该对话为示例对话，包含了基础的头像及其名字显示和对话树功能实现，选项实现，和选项事件实现... ...而使用者在使用时，只需对 _UI_ 和 _SO_ 进行调整，即可放入具体的项目中进行使用。下文将会介绍如何快速上手**DemonViglu_DialogSystem**。
 
 
 ### 创建第一个DialogMissionSO:
