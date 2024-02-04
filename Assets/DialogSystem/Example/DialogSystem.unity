@@ -216,7 +216,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1587347489}
-  - component: {fileID: 1587347488}
   - component: {fileID: 1587347490}
   m_Layer: 0
   m_Name: Player
@@ -225,24 +224,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1587347488
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1587347487}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 57037dc40e28d1b4f9c1d60bc5dc6454, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  file: {fileID: 4900000, guid: 403ac37c67fd2b747ad2754f42044568, type: 3}
-  str: "A\n\u4E0D\u6127\u662F\u4F60\u5462\uFF01\nA\n\u771F\u68D2\u266A"
-  eve:
-    m_PersistentCalls:
-      m_Calls: []
-  a: 0
 --- !u!4 &1587347489
 Transform:
   m_ObjectHideFlags: 0
@@ -353,7 +334,15 @@ PrefabInstance:
     - target: {fileID: 1265962608601414197, guid: a61b4662e9fe3624ebf3eb6caacc8330, type: 3}
       propertyPath: optionEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1587347488}
+      objectReference: {fileID: 1587347490}
+    - target: {fileID: 1265962608601414197, guid: a61b4662e9fe3624ebf3eb6caacc8330, type: 3}
+      propertyPath: optionEvent.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: UseObjectToCallBack
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265962608601414197, guid: a61b4662e9fe3624ebf3eb6caacc8330, type: 3}
+      propertyPath: optionEvent.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: DemonViglu_DIalogSystem_TestExample, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 1265962609095300218, guid: a61b4662e9fe3624ebf3eb6caacc8330, type: 3}
       propertyPath: hasImage
       value: 1
@@ -361,11 +350,11 @@ PrefabInstance:
     - target: {fileID: 1265962609216262507, guid: a61b4662e9fe3624ebf3eb6caacc8330, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1587347488}
+      objectReference: {fileID: 0}
     - target: {fileID: 1265962609664297525, guid: a61b4662e9fe3624ebf3eb6caacc8330, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1587347488}
+      objectReference: {fileID: 0}
     - target: {fileID: 1265962609711386600, guid: a61b4662e9fe3624ebf3eb6caacc8330, type: 3}
       propertyPath: m_RootOrder
       value: 3
