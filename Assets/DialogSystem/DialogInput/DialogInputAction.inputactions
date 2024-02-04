@@ -1,0 +1,56 @@
+{
+    "name": "DialogInputAction",
+    "maps": [
+        {
+            "name": "DialogSystem",
+            "id": "a91a4608-3a77-49b4-9c63-c4993c762a1c",
+            "actions": [
+                {
+                    "name": "PassFunction",
+                    "type": "Button",
+                    "id": "7d7f2c6d-9954-45f3-8dcc-3761c9979ab3",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "93e007ed-7264-4f56-a59d-0c4a12359186",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PassFunction",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "95111977-2c5c-4566-a0bb-09cddb96661e",
+                    "path": "<Keyboard>/p",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PassFunction",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2842b184-24ee-4307-805d-f7a100d46408",
+                    "path": "<Keyboard>/numpadEnter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PassFunction",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

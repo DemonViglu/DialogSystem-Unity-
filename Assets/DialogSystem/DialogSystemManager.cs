@@ -1,8 +1,8 @@
 using CustomInspector;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 namespace DemonViglu.DialogSystemManager {
     public class DialogSystemManager : MonoBehaviour {
@@ -105,7 +105,10 @@ namespace DemonViglu.DialogSystemManager {
         [SerializeField] private bool justFinishMission = false;
 
 
-
+        /// <summary>
+        /// DialogNewInput
+        /// </summary>
+        private DialogInputAction dialogInputAction;
 
 
         #endregion
@@ -120,6 +123,7 @@ namespace DemonViglu.DialogSystemManager {
 
         private void Start() {
             InitialAutoPlayMode();  
+            InitialDialogInput();
         }
 
         /// <summary>
@@ -137,6 +141,11 @@ namespace DemonViglu.DialogSystemManager {
                 hasClickDownPlayButton = false;
             });
             autoPlaySentence = true;
+        }
+
+        private void InitialDialogInput() {
+            dialogInputAction = new DialogInputAction();
+            dialogInputAction.Enable();
         }
         private void TextCharge() {
             if (sentenceIndex >= textList.Count) {
@@ -169,16 +178,6 @@ namespace DemonViglu.DialogSystemManager {
             isOnCoroutine = true;
             textLabel.text = "";
             if(sentenceIndex<textList.Count) {
-                //switch (textList[sentenceIndex]) {
-                //    case "A":
-                //        if (npc1 != null) faceImage.sprite = npc1;
-                //        ++sentenceIndex;
-                //        break;
-                //    case "B":
-                //        if (npc2 != null) faceImage.sprite = npc2;
-                //        ++sentenceIndex;
-                //        break;
-                //}
                 if (SetIconUI(textList[sentenceIndex])) {
                     ++sentenceIndex;
                 }
@@ -196,11 +195,9 @@ namespace DemonViglu.DialogSystemManager {
             isOnCoroutine = false;
             cancelTyping = false;
         }
-
         private bool SetIconUI(string name) {
             if(name=="NULL"){
-                iconRealName.text = "";
-                faceImage.sprite = null;
+                CloseIconUI();
                 return true;
             }
             if (iconManager.iconName.Contains(name)) {
@@ -208,10 +205,17 @@ namespace DemonViglu.DialogSystemManager {
                 faceImage.sprite = iconManager.icons[iconIndex];
                 string realName=name.Split(':')[0];
                 iconRealName.text = realName;
+                faceImage.gameObject.SetActive(true);
                 return true;
             }
             return false;
 
+        }
+
+        private void CloseIconUI() {
+            faceImage.gameObject.SetActive(false);
+            iconRealName.text = "";
+            faceImage.sprite = null;
         }
         #endregion
         private void Update() {
@@ -247,6 +251,10 @@ namespace DemonViglu.DialogSystemManager {
                 if (_SentenceTimeGap > 0) {
                     //防止该TimeGap过于少
                     if(_SentenceTimeGap>-10f)_SentenceTimeGap -= Time.deltaTime;
+                    if (Input.GetKeyDown(keyToPassToNextSentence)) {
+                        _SentenceTimeGap -= 1f;
+                    }
+
                 }
                 else {
                     //_SentenceTimeGap<0且not isOnCoroutine 且等等情况满足，随时可以调用该句子进入下一阶段,但是有auto这个变量卡住
@@ -265,6 +273,7 @@ namespace DemonViglu.DialogSystemManager {
                     _SentenceTimeGap = sentenceTimeGap;
                     UICharge();
                     TextCharge();
+                    hasClickDownPlayButton=false;
                 }
                 return;
             }
@@ -273,6 +282,24 @@ namespace DemonViglu.DialogSystemManager {
                     LoadMissionAtFirst();
                     missionList.RemoveAt(0);
                     onMission = true;
+                }
+            }
+        }
+
+        public void SupportDialogInput(InputAction.CallbackContext context) {
+            if (context.phase == InputActionPhase.Performed) {
+                if (onMission) {
+                    if (isOnCoroutine) {
+                        cancelTyping = true;
+                    }
+                    else {
+                        if(_SentenceTimeGap> 0) {
+                            _SentenceTimeGap -= 1f;
+                        }
+                        else {
+                            hasClickDownPlayButton = true;
+                        }
+                    }
                 }
             }
         }
@@ -323,6 +350,7 @@ namespace DemonViglu.DialogSystemManager {
         private void OnMissionEnd() {
             //Debug.Log("mission complete");
             panel.SetActive(false);
+            CloseIconUI();
             sentenceIndex = 0;
             textList.Clear();
             textLabel.text = "";
@@ -366,7 +394,10 @@ namespace DemonViglu.DialogSystemManager {
                 textList.Clear();
                 textLabel.text = "";
                 _SentenceTimeGap = 0;
+
+                CloseIconUI();
             }
+            panel.SetActive(false);
             //Debug.Log("ClearMissionSuccess");
             CancelInvoke("SetMissionAvalible");
             //the 0.1 second is a must so as not to load the next mission
@@ -550,6 +581,10 @@ namespace DemonViglu.DialogSystemManager {
 
         public int GetChatDialogID() {
             return chatDialogSystemID;
+        }
+
+        public void SetHasimage(bool hasimage) {
+            hasImage = hasimage;
         }
     }
 }

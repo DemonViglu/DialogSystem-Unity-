@@ -810,7 +810,7 @@ MonoBehaviour:
     displayAutoPropertyAttributeExamples:
       _: 0
     fixedValuesAttributeExamples:
-      integer: 1
+      integer: 7
       name: Bob
     foldoutAttributeExamples:
       scriptable1: {fileID: 0}
