@@ -6,7 +6,7 @@ namespace DemonViglu.DialogSystemManager {
     [CreateAssetMenu(fileName = "New DialogMissionSO", menuName = "DialogMission/New DialogMissionSO")]
     public class DialogMissionSO : ScriptableObject {
         public string dialogTitle;
-
+        public int dialogId = -1;
         [TextArea]
         public string textString;
 
@@ -18,7 +18,7 @@ namespace DemonViglu.DialogSystemManager {
 
         public int eventIndex = -1;
 
-        public int dialogId=-1;
+
 
     }
 }

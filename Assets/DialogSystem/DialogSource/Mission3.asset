@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Mission3
   m_EditorClassIdentifier: 
   dialogTitle: "\u52C7\u6562\u56DE\u7B54"
+  dialogId: 2
   textString: "\u554A\u5440\uFF0C\u4E0D\u8981\u5FC3\u6025\u561B\u266A"
   textAsset: {fileID: 0}
   optionMissionIndex: ffffffff
   optionDescription:
   - "\u771F\u662F\u53EF\u7231\u7684\u7231\u8389\u266A"
   eventIndex: -1
-  dialogId: 3

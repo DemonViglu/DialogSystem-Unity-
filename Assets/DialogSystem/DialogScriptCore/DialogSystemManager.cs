@@ -565,9 +565,9 @@ namespace DemonViglu.DialogSystemManager {
         /// Clean the missionList totally
         /// </summary>
         public void ClearAllMission() {
+            ClearMissionRightNow();
             //如果本来就没对话，就别搞了
             if (missionList.Count == 0) { return; }
-            ClearMissionRightNow();
             missionList.Clear();
         }
         #endregion

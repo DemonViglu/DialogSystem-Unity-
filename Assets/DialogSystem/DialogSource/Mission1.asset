@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Mission1
   m_EditorClassIdentifier: 
   dialogTitle: "\u5BB3\u7F9E\u5206\u652F"
+  dialogId: 0
   textString: "Elysia:1\n\u8230\u957F\u597D\u5440\u266A\nElysia:2\n\u4E00\u76F4\u76EF\u7740\u4EBA\u5BB6\uFF0C\u4F1A\u5BB3\u7F9E\u5462\u266A\nNULL\n\u9A97\u4F60\u7684\u5566\uFF0C\u53EF\u7231\u7684\u5973\u5B69\u5B50\u600E\u4E48\u4F1A\u5BB3\u7F9E\u5462"
   textAsset: {fileID: 0}
-  optionMissionIndex: 0200000003000000
+  optionMissionIndex: 0100000002000000
   optionDescription:
   - "\u53EF\u662F\u6211\u5BB3\u7F9E\u4E86\u5462.."
   - "\u7231\u770B\uFF01\u518D\u6765\u70B9\uFF01"
   eventIndex: -1
-  dialogId: 1

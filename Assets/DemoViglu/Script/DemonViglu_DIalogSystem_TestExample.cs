@@ -12,6 +12,7 @@ public class DemonViglu_DIalogSystem_TestExample : MonoBehaviour {
     [Button(nameof(AddMission))]
     public int dialogID;
     public void AddMission() {
+        m_dialogSystemManager.ClearAllMission();
         m_dialogSystemManager.AddMissionAtLast(dialogID);
     }
     private void Start() {

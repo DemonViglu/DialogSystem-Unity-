@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Mission2
   m_EditorClassIdentifier: 
   dialogTitle: "\u5BB3\u7F9E\u56DE\u7B54"
+  dialogId: 1
   textString: "Elysia:1\n\u90A3\u4F60\u4E5F\u662F\u4E2A\u53EF\u7231\u7684\u5B69\u5B50\u5462\u266A"
   textAsset: {fileID: 0}
   optionMissionIndex: ffffffff
   optionDescription:
   - "\u563F\u563F.."
   eventIndex: -1
-  dialogId: 2
