@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55338c7cf164aad409b458e21a7e7952, type: 3}
   m_Name: Mission3
   m_EditorClassIdentifier: 
-  textString: I'm the mission3
+  dialogTitle: "\u52C7\u6562\u56DE\u7B54"
+  textString: "\u554A\u5440\uFF0C\u4E0D\u8981\u5FC3\u6025\u561B\u266A"
   textAsset: {fileID: 0}
-  optionMissionIndex: 03000000
+  optionMissionIndex: ffffffff
   optionDescription:
-  - Trigger the event
+  - "\u771F\u662F\u53EF\u7231\u7684\u7231\u8389\u266A"
   eventIndex: -1
+  dialogId: 3

@@ -15,11 +15,11 @@ public class TestScript : MonoBehaviour
 
     public void AddMissionStr() {
         //DialogSystemManager.instance.AddMissionByStr(str);
-        DialogSystemManager.instance.AddMission(new DialogMission(str,null,null,null,-1,0));
+        DialogSystemManager.instance.AddMissionAtLast(new DialogMission(str,null,null,null,-1,0));
     }
 
     public void AddMissionFile() {
-        DialogSystemManager.instance.AddMission(new DialogMission(str, file));
+        DialogSystemManager.instance.AddMissionAtLast(new DialogMission(str, file));
     }
 
 

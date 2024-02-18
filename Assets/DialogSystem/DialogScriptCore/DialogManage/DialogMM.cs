@@ -67,7 +67,7 @@ namespace DemonViglu.DialogSystemManager {
                 d2.MultiDialogUnlock();
                 d1.isMultiMissionChat = true;
                 d2.isMultiMissionChat = true;
-                if(SO!=-1)d2.AddMissionSO(SO);
+                if(SO!=-1)d2.AddMissionAtLast(SO);
             }
             else {
                 Debug.Log("Bad Request!");

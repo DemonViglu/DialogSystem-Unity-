@@ -1,3 +1,4 @@
+using CustomInspector;
 using DemonViglu.DialogSystemManager;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,8 +10,15 @@ public class Demon_NPC_Dialog : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision) {
         if (collision.gameObject.CompareTag("Player")) {
-            dialogManager.AddMissionSO(0);
+            dialogManager.AddMissionAtLast(0);
             Debug.Log("I'm going to talk");
         }
+    }
+
+    [Button(nameof(Test))]
+    public int a;
+    public void Test() {
+        dialogManager.ClearAllMission();
+        dialogManager.AddMissionAtLast(0);
     }
 }
